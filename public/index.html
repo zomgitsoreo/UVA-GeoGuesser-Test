@@ -1289,81 +1289,120 @@
         </div>
       `).join('');
 
-      // Initialize result map
-      if (resultMap) {
-        resultMap.remove();
-      }
-
-      resultMap = L.map('result-map', {
-        center: [data.location.lat, data.location.lng],
-        zoom: 13,
-        zoomControl: false
-      });
-
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
-      }).addTo(resultMap);
-
-      // Add actual location marker
-      const actualIcon = L.divIcon({
-        className: 'actual-marker',
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-      });
-
-      L.marker([data.location.lat, data.location.lng], { icon: actualIcon })
-        .addTo(resultMap)
-        .bindPopup(data.location.name);
-
-      // Add player guess markers
-      const colors = ['#E57200', '#3B82F6', '#22C55E', '#EAB308', '#EC4899', '#8B5CF6', '#14B8A6', '#F97316'];
-      const bounds = [[data.location.lat, data.location.lng]];
-
-      data.results.forEach((r, i) => {
-        if (r.guess) {
-          const color = colors[i % colors.length];
-          const icon = L.divIcon({
-            className: 'player-guess-marker',
-            html: `<div style="background: ${color}; width: 100%; height: 100%; border-radius: 50%;"></div>`,
-            iconSize: [14, 14],
-            iconAnchor: [7, 7]
-          });
-
-          L.marker([r.guess.lat, r.guess.lng], { icon })
-            .addTo(resultMap)
-            .bindPopup(r.name);
-
-          bounds.push([r.guess.lat, r.guess.lng]);
-
-          // Draw line to actual
-          L.polyline([
-            [r.guess.lat, r.guess.lng],
-            [data.location.lat, data.location.lng]
-          ], {
-            color,
-            weight: 2,
-            opacity: 0.5,
-            dashArray: '5, 5'
-          }).addTo(resultMap);
+      // Initialize result map with error handling
+      try {
+        if (resultMap) {
+          resultMap.remove();
+          resultMap = null;
         }
-      });
 
-      if (bounds.length > 1) {
-        resultMap.fitBounds(bounds, { padding: [30, 30] });
+        resultMap = L.map('result-map', {
+          center: [data.location.lat, data.location.lng],
+          zoom: 13,
+          zoomControl: false
+        });
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          maxZoom: 19
+        }).addTo(resultMap);
+
+        // Add actual location marker
+        const actualIcon = L.divIcon({
+          className: 'actual-marker',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
+        });
+
+        L.marker([data.location.lat, data.location.lng], { icon: actualIcon })
+          .addTo(resultMap)
+          .bindPopup(data.location.name);
+
+        // Add player guess markers
+        const colors = ['#E57200', '#3B82F6', '#22C55E', '#EAB308', '#EC4899', '#8B5CF6', '#14B8A6', '#F97316'];
+        const bounds = [[data.location.lat, data.location.lng]];
+
+        data.results.forEach((r, i) => {
+          if (r.guess) {
+            const color = colors[i % colors.length];
+            const icon = L.divIcon({
+              className: 'player-guess-marker',
+              html: `<div style="background: ${color}; width: 100%; height: 100%; border-radius: 50%;"></div>`,
+              iconSize: [14, 14],
+              iconAnchor: [7, 7]
+            });
+
+            L.marker([r.guess.lat, r.guess.lng], { icon })
+              .addTo(resultMap)
+              .bindPopup(r.name);
+
+            bounds.push([r.guess.lat, r.guess.lng]);
+
+            // Draw line to actual
+            L.polyline([
+              [r.guess.lat, r.guess.lng],
+              [data.location.lat, data.location.lng]
+            ], {
+              color,
+              weight: 2,
+              opacity: 0.5,
+              dashArray: '5, 5'
+            }).addTo(resultMap);
+          }
+        });
+
+        if (bounds.length > 1) {
+          resultMap.fitBounds(bounds, { padding: [30, 30] });
+        }
+
+        setTimeout(() => {
+          if (resultMap) resultMap.invalidateSize();
+        }, 100);
+      } catch (err) {
+        console.error('Error initializing result map:', err);
       }
 
-      // Update button text
+      // Reset and update button
       const nextBtn = document.getElementById('next-round-btn');
+      nextBtn.disabled = false;
       nextBtn.textContent = data.round >= data.totalRounds ? 'See Final Results' : 'Next Round';
 
       document.getElementById('results-modal').classList.add('active');
-      setTimeout(() => resultMap.invalidateSize(), 100);
     }
 
     document.getElementById('next-round-btn').addEventListener('click', () => {
+      const btn = document.getElementById('next-round-btn');
+      if (btn.disabled) return;
+      
+      console.log('Sending readyForNext');
       socket.emit('readyForNext');
-      document.getElementById('next-round-btn').disabled = true;
-      document.getElementById('next-round-btn').textContent = 'Waiting...';
+      btn.disabled = true;
+      btn.textContent = 'Waiting...';
+      
+      // Safety timeout - re-enable after 10 seconds if stuck
+      setTimeout(() => {
+        if (btn.textContent === 'Waiting...') {
+          console.log('Timeout - re-enabling button');
+          btn.disabled = false;
+          btn.textContent = 'Next Round (retry)';
+        }
+      }, 10000);
+    });
+
+    // Handle ready count updates
+    socket.on('readyUpdate', (data) => {
+      const btn = document.getElementById('next-round-btn');
+      if (btn.disabled) {
+        btn.textContent = `Waiting (${data.readyCount}/${data.totalPlayers})...`;
+      }
+    });
+
+    // Handle disconnection
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
     });
 
     function showFinalResults(results) {
