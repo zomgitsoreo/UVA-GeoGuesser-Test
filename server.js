@@ -7,8 +7,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve static files
+// Serve static files from 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Explicitly serve index.html for root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Charlottesville/UVA locations
 const LOCATIONS = [
@@ -234,23 +239,43 @@ io.on('connection', (socket) => {
   // Player requests next round (after viewing results)
   socket.on('readyForNext', () => {
     const room = rooms.get(socket.roomCode);
-    if (!room) return;
+    if (!room) {
+      console.log('readyForNext: room not found for', socket.roomCode);
+      return;
+    }
+
+    // Only process if we're in results state
+    if (room.state !== 'results') {
+      console.log('readyForNext: wrong state', room.state);
+      return;
+    }
 
     const player = room.players.get(socket.id);
     if (player) {
       player.readyForNext = true;
     }
 
-    // Check if all players are ready
-    const allReady = Array.from(room.players.values()).every(p => p.readyForNext);
+    // Count ready players
+    const readyCount = Array.from(room.players.values()).filter(p => p.readyForNext).length;
+    const totalPlayers = room.players.size;
+    
+    console.log(`Ready: ${readyCount}/${totalPlayers}, isHost: ${socket.id === room.host}`);
+
+    // Broadcast ready count to all players
+    io.to(room.code).emit('readyUpdate', { readyCount, totalPlayers });
+
+    // Check if all players are ready OR if host clicked
+    const allReady = readyCount >= totalPlayers;
     if (allReady || socket.id === room.host) {
       // Reset ready status
       room.players.forEach(p => p.readyForNext = false);
       
       if (room.currentRound >= room.settings.rounds) {
+        console.log('Showing final results');
         showFinalResults(room);
       } else {
         room.currentRound++;
+        console.log('Starting round', room.currentRound);
         startRound(room);
       }
     }
@@ -400,4 +425,10 @@ function showFinalResults(room) {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`C'ville GeoFinder server running on port ${PORT}`);
+  console.log(`Static files served from: ${path.join(__dirname, 'public')}`);
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
 });
