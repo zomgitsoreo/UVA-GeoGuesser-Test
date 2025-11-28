@@ -1277,17 +1277,28 @@
       document.getElementById('results-round').textContent = data.round;
       document.getElementById('results-location').textContent = data.location.name;
 
-      // Build results list
+      // Build results list with better distance formatting
       const listEl = document.getElementById('results-list');
-      listEl.innerHTML = data.results.map((r, i) => `
-        <div class="result-row">
-          <div class="result-rank">#${i + 1}</div>
-          <div class="result-name">${r.name}${r.name === state.playerName ? ' (You)' : ''}</div>
-          <div class="result-distance">${r.distance !== null ? r.distance.toFixed(2) + ' mi' : 'No guess'}</div>
-          <div class="result-points">+${r.roundPoints}</div>
-          <div class="result-total">${r.score.toLocaleString()}</div>
-        </div>
-      `).join('');
+      listEl.innerHTML = data.results.map((r, i) => {
+        let distanceText = 'No guess';
+        if (r.distance !== null) {
+          if (r.distance < 0.1) {
+            // Show feet for very close guesses
+            distanceText = Math.round(r.distance * 5280) + ' ft';
+          } else {
+            distanceText = r.distance.toFixed(2) + ' mi';
+          }
+        }
+        return `
+          <div class="result-row">
+            <div class="result-rank">#${i + 1}</div>
+            <div class="result-name">${r.name}${r.name === state.playerName ? ' (You)' : ''}</div>
+            <div class="result-distance">${distanceText}</div>
+            <div class="result-points">+${r.roundPoints}</div>
+            <div class="result-total">${r.score.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
 
       // Initialize result map with error handling
       try {
