@@ -15,33 +15,36 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Charlottesville/UVA locations
+// Charlottesville/UVA locations - prioritizing indoor Street Views where available
 const LOCATIONS = [
-  { name: "The Rotunda", lat: 38.0356, lng: -78.5034, heading: 180 },
-  { name: "The Corner", lat: 38.0343, lng: -78.5010, heading: 90 },
-  { name: "Downtown Mall - East End", lat: 38.0298, lng: -78.4763, heading: 270 },
-  { name: "Downtown Mall - West End", lat: 38.0293, lng: -78.4830, heading: 90 },
-  { name: "Scott Stadium", lat: 38.0311, lng: -78.5138, heading: 45 },
-  { name: "Barracks Road Shopping Center", lat: 38.0453, lng: -78.5057, heading: 180 },
-  { name: "UVA Medical Center", lat: 38.0297, lng: -78.5009, heading: 0 },
-  { name: "Lambeth Field", lat: 38.0378, lng: -78.5093, heading: 135 },
-  { name: "Grounds - Old Cabell Hall", lat: 38.0352, lng: -78.5054, heading: 0 },
-  { name: "Charlottesville Amtrak Station", lat: 38.0317, lng: -78.4916, heading: 90 },
-  { name: "Dairy Market", lat: 38.0250, lng: -78.4792, heading: 180 },
-  { name: "IX Art Park", lat: 38.0242, lng: -78.4795, heading: 270 },
-  { name: "Belmont Bridge", lat: 38.0275, lng: -78.4825, heading: 45 },
-  { name: "McIntire Park", lat: 38.0420, lng: -78.4870, heading: 180 },
-  { name: "Alderman Library", lat: 38.0365, lng: -78.5055, heading: 90 },
-  { name: "Memorial Gym", lat: 38.0338, lng: -78.5075, heading: 0 },
-  { name: "Newcomb Hall", lat: 38.0355, lng: -78.5070, heading: 270 },
-  { name: "Clark Hall", lat: 38.0328, lng: -78.5095, heading: 45 },
-  { name: "Rugby Road", lat: 38.0385, lng: -78.5038, heading: 180 },
-  { name: "Amphitheater", lat: 38.0348, lng: -78.5020, heading: 90 },
-  { name: "John Paul Jones Arena", lat: 38.0461, lng: -78.5068, heading: 0 },
-  { name: "Fontaine Research Park", lat: 38.0190, lng: -78.5150, heading: 90 },
-  { name: "Stonefield", lat: 38.0570, lng: -78.4980, heading: 180 },
-  { name: "Pantops Shopping Center", lat: 38.0350, lng: -78.4570, heading: 270 },
-  { name: "Lee Park / Market Street Park", lat: 38.0310, lng: -78.4790, heading: 0 }
+  // Indoor locations (harder, more interesting)
+  { name: "Inside the Rotunda", lat: 38.03545, lng: -78.50337, heading: 180, indoor: true },
+  { name: "Alderman Library Reading Room", lat: 38.03679, lng: -78.50567, heading: 270, indoor: true },
+  { name: "Newcomb Hall Interior", lat: 38.03538, lng: -78.50699, heading: 90, indoor: true },
+  { name: "The Corner - Littlejohn's Deli", lat: 38.03356, lng: -78.50052, heading: 45, indoor: true },
+  { name: "Dairy Market Food Hall", lat: 38.02509, lng: -78.47893, heading: 180, indoor: true },
+  { name: "IX Art Park Gallery", lat: 38.02432, lng: -78.47922, heading: 0, indoor: true },
+  { name: "Downtown Mall - Mudhouse Coffee", lat: 38.02963, lng: -78.48161, heading: 90, indoor: true },
+  { name: "Charlottesville City Market", lat: 38.02912, lng: -78.47704, heading: 270, indoor: true },
+  { name: "The Jefferson Theater Lobby", lat: 38.02943, lng: -78.48054, heading: 180, indoor: true },
+  { name: "Violet Crown Cinema", lat: 38.02994, lng: -78.48209, heading: 0, indoor: true },
+  { name: "McGuffey Art Center", lat: 38.03089, lng: -78.48441, heading: 90, indoor: true },
+  { name: "C'ville Coffee Downtown", lat: 38.02947, lng: -78.47742, heading: 45, indoor: true },
+  { name: "Brazos Tacos", lat: 38.02882, lng: -78.48292, heading: 180, indoor: true },
+  { name: "John Paul Jones Arena Concourse", lat: 38.04583, lng: -78.50694, heading: 270, indoor: true },
+  { name: "Regal Stonefield Cinema", lat: 38.05712, lng: -78.49813, heading: 0, indoor: true },
+  
+  // Outdoor locations (mix of easy and tricky)
+  { name: "The Rotunda - Outside", lat: 38.0356, lng: -78.5034, heading: 180, indoor: false },
+  { name: "The Lawn", lat: 38.0346, lng: -78.5035, heading: 0, indoor: false },
+  { name: "The Corner", lat: 38.0343, lng: -78.5010, heading: 90, indoor: false },
+  { name: "Scott Stadium", lat: 38.0311, lng: -78.5138, heading: 45, indoor: false },
+  { name: "Downtown Mall Fountain", lat: 38.0298, lng: -78.4800, heading: 270, indoor: false },
+  { name: "Belmont Bridge", lat: 38.0275, lng: -78.4825, heading: 45, indoor: false },
+  { name: "UVA Medical Center", lat: 38.0297, lng: -78.5009, heading: 0, indoor: false },
+  { name: "Barracks Road Shopping Center", lat: 38.0453, lng: -78.5057, heading: 180, indoor: false },
+  { name: "Rugby Road", lat: 38.0385, lng: -78.5038, heading: 180, indoor: false },
+  { name: "Lambeth Field", lat: 38.0378, lng: -78.5093, heading: 135, indoor: false },
 ];
 
 // Game rooms storage
@@ -70,10 +73,12 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// Calculate points based on distance
+// Calculate points based on distance - exponential decay for small area precision
 function calculatePoints(distance) {
-  // 5000 points max, 0 points at 5 miles
-  return Math.max(0, Math.round(5000 * (1 - distance / 5)));
+  // Exponential decay: much more sensitive at close distances
+  // 0 miles = 5000, 0.1 miles = ~4000, 0.25 miles = ~2800, 0.5 miles = ~1500, 1 mile = ~450, 2+ miles = near 0
+  const points = Math.round(5000 * Math.exp(-3 * distance));
+  return Math.max(0, points);
 }
 
 // Shuffle array
@@ -194,7 +199,21 @@ io.on('connection', (socket) => {
 
     room.state = 'viewing';
     room.currentRound = 1;
-    room.locations = shuffleArray(LOCATIONS).slice(0, room.settings.rounds);
+    
+    // Prioritize indoor locations (70% indoor, 30% outdoor)
+    const indoorLocations = LOCATIONS.filter(loc => loc.indoor);
+    const outdoorLocations = LOCATIONS.filter(loc => !loc.indoor);
+    
+    const numRounds = room.settings.rounds;
+    const numIndoor = Math.ceil(numRounds * 0.7);
+    const numOutdoor = numRounds - numIndoor;
+    
+    // Shuffle and pick from each category
+    const shuffledIndoor = shuffleArray(indoorLocations).slice(0, numIndoor);
+    const shuffledOutdoor = shuffleArray(outdoorLocations).slice(0, numOutdoor);
+    
+    // Combine and shuffle the final selection
+    room.locations = shuffleArray([...shuffledIndoor, ...shuffledOutdoor]);
 
     startRound(room);
   });
