@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>C'ville GeoFinder - Multiplayer</title>
+  <title>C'ville GeoFinder - UVA Edition</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -19,11 +19,7 @@
       --danger: #ef4444;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Space Mono', monospace;
@@ -31,18 +27,6 @@
       color: var(--text-light);
       min-height: 100vh;
       overflow-x: hidden;
-    }
-
-    .noise-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      opacity: 0.03;
-      z-index: 1000;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     }
 
     .screen {
@@ -58,9 +42,7 @@
         var(--bg-dark);
     }
 
-    .screen.active {
-      display: flex;
-    }
+    .screen.active { display: flex; }
 
     .logo {
       font-family: 'Bebas Neue', sans-serif;
@@ -72,7 +54,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 60px rgba(229, 114, 0, 0.5);
     }
 
     .subtitle {
@@ -90,9 +71,7 @@
       padding: 2rem;
       width: 100%;
       max-width: 450px;
-      box-shadow: 
-        0 4px 30px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
     }
 
     .section-label {
@@ -103,9 +82,7 @@
       margin-bottom: 0.75rem;
     }
 
-    .input-group {
-      margin-bottom: 1.5rem;
-    }
+    .input-group { margin-bottom: 1.5rem; }
 
     .text-input {
       width: 100%;
@@ -116,25 +93,10 @@
       color: var(--text-light);
       font-family: inherit;
       font-size: 1rem;
-      transition: border-color 0.2s;
     }
 
-    .text-input:focus {
-      outline: none;
-      border-color: var(--uva-orange);
-    }
-
-    .text-input.room-code {
-      text-align: center;
-      font-size: 1.5rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 0.75rem;
-    }
+    .text-input:focus { outline: none; border-color: var(--uva-orange); }
+    .text-input.room-code { text-align: center; font-size: 1.5rem; letter-spacing: 0.3em; text-transform: uppercase; }
 
     .btn {
       flex: 1;
@@ -154,56 +116,16 @@
       box-shadow: 0 4px 15px rgba(229, 114, 0, 0.3);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(229, 114, 0, 0.5);
-    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(229, 114, 0, 0.5); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.1); color: var(--text-light); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .btn-success { background: linear-gradient(135deg, var(--success), #16a34a); color: white; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-light);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
+    .btn-row { display: flex; gap: 0.75rem; }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, var(--success), #16a34a);
-      color: white;
-      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-    }
-
-    .btn-success:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 1.5rem 0;
-      color: var(--text-muted);
-      font-size: 0.75rem;
-    }
-
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .divider span {
-      padding: 0 1rem;
-    }
+    .divider { display: flex; align-items: center; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.75rem; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.1); }
+    .divider span { padding: 0 1rem; }
 
     .error-msg {
       background: rgba(239, 68, 68, 0.2);
@@ -215,15 +137,9 @@
       color: #fca5a5;
       display: none;
     }
+    .error-msg.visible { display: block; }
 
-    .error-msg.visible {
-      display: block;
-    }
-
-    /* Lobby Screen */
-    .lobby-card {
-      max-width: 600px;
-    }
+    .lobby-card { max-width: 600px; }
 
     .room-code-display {
       background: rgba(229, 114, 0, 0.1);
@@ -234,20 +150,8 @@
       margin-bottom: 1.5rem;
     }
 
-    .room-code-label {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.25rem;
-    }
-
-    .room-code-value {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.5rem;
-      color: var(--uva-orange);
-      letter-spacing: 0.3em;
-    }
+    .room-code-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+    .room-code-value { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--uva-orange); letter-spacing: 0.3em; }
 
     .copy-btn {
       background: transparent;
@@ -258,110 +162,24 @@
       font-size: 0.7rem;
       cursor: pointer;
       margin-top: 0.5rem;
-      transition: all 0.2s;
     }
 
-    .copy-btn:hover {
-      border-color: var(--uva-orange);
-      color: var(--uva-orange);
-    }
+    .settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
 
-    .settings-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
+    .setting-item { background: rgba(0, 0, 0, 0.2); border-radius: 0.5rem; padding: 0.75rem; text-align: center; }
+    .setting-item label { display: block; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+    .setting-item select { width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.25rem; padding: 0.5rem; color: var(--text-light); font-family: inherit; font-size: 0.8rem; }
 
-    .setting-item {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 0.5rem;
-      padding: 0.75rem;
-      text-align: center;
-    }
+    .player-list { background: rgba(0, 0, 0, 0.2); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem; max-height: 200px; overflow-y: auto; }
+    .player-item { display: flex; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .player-item:last-child { border-bottom: none; }
+    .player-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--uva-blue); display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; font-size: 0.75rem; font-weight: bold; }
+    .player-name { flex: 1; }
+    .host-badge { background: var(--uva-orange); color: white; font-size: 0.6rem; padding: 0.2rem 0.5rem; border-radius: 1rem; }
+    .waiting-text { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1rem; }
 
-    .setting-item label {
-      display: block;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-
-    .setting-item select {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 0.25rem;
-      padding: 0.5rem;
-      color: var(--text-light);
-      font-family: inherit;
-      font-size: 0.8rem;
-    }
-
-    .player-list {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .player-item {
-      display: flex;
-      align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .player-item:last-child {
-      border-bottom: none;
-    }
-
-    .player-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--uva-blue);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 0.75rem;
-      font-size: 0.75rem;
-      font-weight: bold;
-    }
-
-    .player-name {
-      flex: 1;
-    }
-
-    .host-badge {
-      background: var(--uva-orange);
-      color: white;
-      font-size: 0.6rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .waiting-text {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      padding: 1rem;
-    }
-
-    /* Game Screen */
-    .game-screen {
-      padding: 0;
-      background: var(--bg-dark);
-    }
-
-    .game-screen.active {
-      display: block;
-    }
+    .game-screen { padding: 0; background: var(--bg-dark); }
+    .game-screen.active { display: block; }
 
     .game-header {
       background: var(--bg-card);
@@ -370,95 +188,32 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: relative;
       z-index: 100;
     }
 
-    .game-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.25rem;
-      color: var(--uva-orange);
-      letter-spacing: 0.05em;
-    }
+    .game-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; color: var(--uva-orange); }
+    .game-stats { display: flex; gap: 1.5rem; align-items: center; }
+    .stat-item { text-align: center; }
+    .stat-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; }
+    .stat-value { font-size: 1rem; font-weight: 700; }
+    .stat-value.timer { color: var(--accent-gold); font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; min-width: 50px; }
+    .stat-value.timer.warning { color: var(--danger); animation: pulse 0.5s infinite; }
 
-    .game-stats {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-    .stat-item {
-      text-align: center;
-    }
+    .phase-badge { background: var(--uva-blue); border: 1px solid var(--uva-orange); border-radius: 2rem; padding: 0.4rem 1rem; font-size: 0.75rem; text-transform: uppercase; }
+    .phase-badge.guessing { background: rgba(34, 197, 94, 0.2); border-color: var(--success); }
 
-    .stat-label {
-      font-size: 0.55rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
+    .game-content { display: flex; height: calc(100vh - 56px); }
 
-    .stat-value {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-light);
-    }
-
-    .stat-value.timer {
-      color: var(--accent-gold);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      min-width: 50px;
-    }
-
-    .stat-value.timer.warning {
-      color: var(--danger);
-      animation: pulse 0.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .phase-badge {
-      background: var(--uva-blue);
-      border: 1px solid var(--uva-orange);
-      border-radius: 2rem;
-      padding: 0.4rem 1rem;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .phase-badge.guessing {
-      background: rgba(34, 197, 94, 0.2);
-      border-color: var(--success);
-    }
-
-    .game-content {
-      display: flex;
-      height: calc(100vh - 56px);
-    }
-
-    .streetview-panel {
-      flex: 1;
-      position: relative;
-      background: #000;
-    }
-
-    .streetview-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+    .streetview-panel { flex: 1; position: relative; background: #000; }
+    #streetview { width: 100%; height: 100%; }
 
     .guess-count-overlay {
       position: absolute;
       top: 1rem;
       left: 1rem;
       background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 0.5rem;
       padding: 0.5rem 1rem;
@@ -467,77 +222,51 @@
     }
 
     .map-panel {
-      width: 380px;
-      position: relative;
+      width: 400px;
       background: var(--bg-card);
       border-left: 1px solid rgba(229, 114, 0, 0.2);
       display: flex;
       flex-direction: column;
     }
+    .map-panel.hidden { display: none; }
 
-    .map-panel.hidden {
-      display: none;
+    .map-header { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .map-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--uva-orange); }
+    .map-instruction { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    #guess-map { flex: 1; background: var(--bg-dark); }
+
+    .map-footer { padding: 0.75rem 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+
+    .year-guess-section { margin-bottom: 1rem; }
+    .year-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
+    .year-value { color: var(--uva-orange); font-weight: bold; font-size: 1rem; }
+
+    .year-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
     }
+    .year-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--uva-orange); cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
 
-    .map-header {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+    .guess-submitted-msg { text-align: center; color: var(--success); font-size: 0.85rem; padding: 0.5rem; display: none; }
+    .guess-submitted-msg.visible { display: block; }
 
-    .map-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem;
-      color: var(--uva-orange);
-      letter-spacing: 0.05em;
-    }
-
-    .map-instruction {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }
-
-    #guess-map {
-      flex: 1;
-      background: var(--bg-dark);
-    }
-
-    .map-footer {
-      padding: 0.75rem 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .guess-submitted-msg {
-      text-align: center;
-      color: var(--success);
-      font-size: 0.85rem;
-      padding: 0.5rem;
-      display: none;
-    }
-
-    .guess-submitted-msg.visible {
-      display: block;
-    }
-
-    /* Results Modal */
     .modal-overlay {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(5px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
       padding: 1rem;
     }
-
-    .modal-overlay.active {
-      display: flex;
-    }
+    .modal-overlay.active { display: flex; }
 
     .results-modal {
       background: var(--bg-card);
@@ -545,48 +274,22 @@
       border-radius: 1rem;
       padding: 1.5rem;
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       max-height: 90vh;
       overflow-y: auto;
       animation: modalIn 0.3s ease-out;
     }
 
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95) translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-    .results-header {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
+    .results-header { text-align: center; margin-bottom: 1rem; }
+    .results-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; color: var(--uva-orange); }
+    .results-location { font-size: 0.85rem; color: var(--text-muted); }
+    .results-year { font-size: 1rem; color: var(--accent-gold); margin-top: 0.25rem; }
 
-    .results-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.75rem;
-      color: var(--uva-orange);
-    }
+    #result-map { height: 180px; border-radius: 0.5rem; margin-bottom: 1rem; }
 
-    .results-location {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    #result-map {
-      height: 180px;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .results-list {
-      margin-bottom: 1rem;
-    }
+    .results-list { margin-bottom: 1rem; }
 
     .result-row {
       display: flex;
@@ -595,185 +298,51 @@
       background: rgba(0, 0, 0, 0.2);
       border-radius: 0.5rem;
       margin-bottom: 0.4rem;
+      gap: 0.5rem;
     }
+    .result-row:first-child { background: rgba(229, 114, 0, 0.15); border: 1px solid rgba(229, 114, 0, 0.3); }
 
-    .result-row:first-child {
-      background: rgba(229, 114, 0, 0.15);
-      border: 1px solid rgba(229, 114, 0, 0.3);
-    }
+    .result-rank { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; color: var(--uva-orange); width: 35px; text-align: center; }
+    .result-row:first-child .result-rank { color: var(--accent-gold); }
+    .result-name { flex: 1; font-size: 0.85rem; }
+    .result-details { display: flex; gap: 0.75rem; font-size: 0.7rem; }
+    .result-distance, .result-year-guess { color: var(--text-muted); }
+    .result-year-guess.correct { color: var(--success); }
+    .result-points { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--accent-gold); min-width: 55px; text-align: right; }
+    .result-breakdown { font-size: 0.6rem; color: var(--text-muted); text-align: right; }
 
-    .result-rank {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.25rem;
-      color: var(--uva-orange);
-      width: 40px;
-      text-align: center;
-    }
+    .final-modal { text-align: center; }
+    .winner-announcement { margin-bottom: 1.5rem; }
+    .winner-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2em; }
+    .winner-name { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; background: linear-gradient(135deg, var(--uva-orange), var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .winner-score { font-size: 1.25rem; color: var(--accent-gold); }
 
-    .result-row:first-child .result-rank {
-      color: var(--accent-gold);
-    }
+    .final-standings { text-align: left; margin-bottom: 1.5rem; }
+    .final-row { display: flex; align-items: center; padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 0.5rem; margin-bottom: 0.4rem; }
+    .final-row:first-child { background: rgba(229, 114, 0, 0.2); border: 1px solid rgba(229, 114, 0, 0.3); }
+    .final-rank { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--uva-orange); width: 50px; }
+    .final-row:first-child .final-rank { color: var(--accent-gold); }
+    .final-name { flex: 1; }
+    .final-score { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--accent-gold); }
 
-    .result-name {
-      flex: 1;
-      font-size: 0.9rem;
-    }
+    .leaflet-container { background: var(--bg-dark); }
+    .guess-marker { background: var(--uva-orange); border: 3px solid white; border-radius: 50%; width: 16px; height: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+    .actual-marker { background: var(--success); border: 3px solid white; border-radius: 50%; width: 20px; height: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+    .player-guess-marker { border: 2px solid white; border-radius: 50%; width: 14px; height: 14px; opacity: 0.8; }
 
-    .result-distance {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      width: 80px;
-      text-align: right;
-    }
-
-    .result-points {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.25rem;
-      color: var(--accent-gold);
-      width: 70px;
-      text-align: right;
-    }
-
-    .result-total {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-align: right;
-      width: 60px;
-    }
-
-    /* Final Results */
-    .final-modal {
-      text-align: center;
-    }
-
-    .winner-announcement {
-      margin-bottom: 1.5rem;
-    }
-
-    .winner-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-    }
-
-    .winner-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3rem;
-      background: linear-gradient(135deg, var(--uva-orange), var(--accent-gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .winner-score {
-      font-size: 1.25rem;
-      color: var(--accent-gold);
-    }
-
-    .final-standings {
-      text-align: left;
-      margin-bottom: 1.5rem;
-    }
-
-    .final-row {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 0.5rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .final-row:first-child {
-      background: rgba(229, 114, 0, 0.2);
-      border: 1px solid rgba(229, 114, 0, 0.3);
-    }
-
-    .final-rank {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      color: var(--uva-orange);
-      width: 50px;
-    }
-
-    .final-row:first-child .final-rank {
-      color: var(--accent-gold);
-    }
-
-    .final-name {
-      flex: 1;
-    }
-
-    .final-score {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      color: var(--accent-gold);
-    }
-
-    /* Leaflet */
-    .leaflet-container {
-      background: var(--bg-dark);
-    }
-
-    .guess-marker {
-      background: var(--uva-orange);
-      border: 3px solid white;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .actual-marker {
-      background: var(--success);
-      border: 3px solid white;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .player-guess-marker {
-      border: 2px solid white;
-      border-radius: 50%;
-      width: 14px;
-      height: 14px;
-      opacity: 0.8;
-    }
-
-    /* Responsive */
     @media (max-width: 768px) {
-      .game-content {
-        flex-direction: column;
-      }
-
-      .map-panel {
-        width: 100%;
-        height: 50%;
-      }
-
-      .streetview-panel {
-        height: 50%;
-      }
-
-      .game-stats {
-        gap: 1rem;
-      }
-
-      .settings-grid {
-        grid-template-columns: 1fr;
-      }
+      .game-content { flex-direction: column; }
+      .map-panel { width: 100%; height: 50%; }
+      .streetview-panel { height: 50%; }
+      .settings-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="noise-overlay"></div>
-
   <!-- Home Screen -->
   <div class="screen active" id="home-screen">
     <h1 class="logo">C'ville GeoFinder</h1>
-    <p class="subtitle">Multiplayer Edition</p>
+    <p class="subtitle">UVA Time Machine Edition</p>
     
     <div class="card">
       <div class="error-msg" id="home-error"></div>
@@ -823,7 +392,7 @@
         <div class="setting-item">
           <label>View Time</label>
           <select id="setting-view-time">
-            <option value="15">15s</option>
+            <option value="20">20s</option>
             <option value="30" selected>30s</option>
             <option value="45">45s</option>
             <option value="60">60s</option>
@@ -832,7 +401,7 @@
         <div class="setting-item">
           <label>Guess Time</label>
           <select id="setting-guess-time">
-            <option value="15">15s</option>
+            <option value="20">20s</option>
             <option value="30" selected>30s</option>
             <option value="45">45s</option>
             <option value="60">60s</option>
@@ -871,7 +440,7 @@
 
     <div class="game-content">
       <div class="streetview-panel">
-        <iframe id="streetview-frame" class="streetview-frame" allowfullscreen></iframe>
+        <div id="streetview"></div>
         <div class="guess-count-overlay" id="guess-count-overlay">
           <span id="guess-count-text">0/0 guessed</span>
         </div>
@@ -880,10 +449,17 @@
       <div class="map-panel hidden" id="map-panel">
         <div class="map-header">
           <div class="map-title">Place Your Guess</div>
-          <div class="map-instruction">Click on the map to mark your location</div>
+          <div class="map-instruction">Click the map & select the year</div>
         </div>
         <div id="guess-map"></div>
         <div class="map-footer">
+          <div class="year-guess-section">
+            <div class="year-label">
+              <span>What year was this taken?</span>
+              <span class="year-value" id="year-value">2015</span>
+            </div>
+            <input type="range" class="year-slider" id="year-slider" min="2007" max="2024" value="2015">
+          </div>
           <div class="guess-submitted-msg" id="guess-submitted-msg">✓ Guess submitted!</div>
           <button class="btn btn-success" id="submit-guess-btn" disabled style="width: 100%;">Submit Guess</button>
         </div>
@@ -897,6 +473,7 @@
       <div class="results-header">
         <div class="results-title">Round <span id="results-round">1</span> Results</div>
         <div class="results-location" id="results-location">The Rotunda</div>
+        <div class="results-year">Photo taken in <span id="results-year">2019</span></div>
       </div>
       <div id="result-map"></div>
       <div class="results-list" id="results-list"></div>
@@ -921,10 +498,26 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Socket connection
+    const GOOGLE_API_KEY = 'AIzaSyB0I16HMmA-UndUb7jjwTrtT_GcVYK9rBo';
+    
+    // Load Google Maps API
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&callback=initGoogleMaps`;
+    script.async = true;
+    document.head.appendChild(script);
+
+    let googleMapsReady = false;
+    let streetViewPanorama = null;
+    let streetViewService = null;
+
+    function initGoogleMaps() {
+      googleMapsReady = true;
+      streetViewService = new google.maps.StreetViewService();
+      console.log('Google Maps API loaded');
+    }
+
     const socket = io();
 
-    // State
     let state = {
       playerName: '',
       roomCode: '',
@@ -938,63 +531,36 @@
       timerInterval: null,
       hasGuessed: false,
       guessCoords: null,
-      guessMarker: null
+      guessMarker: null,
+      currentYear: 2015,
+      actualYear: null
     };
 
     let guessMap, resultMap;
 
-    // DOM Elements
     const screens = {
       home: document.getElementById('home-screen'),
       lobby: document.getElementById('lobby-screen'),
       game: document.getElementById('game-screen')
     };
 
-    // Check URL for room code
+    // URL room code
     const urlParams = new URLSearchParams(window.location.search);
     const urlRoomCode = urlParams.get('room');
     if (urlRoomCode) {
       document.getElementById('room-code-input').value = urlRoomCode.toUpperCase();
     }
 
-    // Screen management
+    // Year slider
+    document.getElementById('year-slider').addEventListener('input', (e) => {
+      state.currentYear = parseInt(e.target.value);
+      document.getElementById('year-value').textContent = state.currentYear;
+    });
+
     function showScreen(screenName) {
       Object.values(screens).forEach(s => s.classList.remove('active'));
       screens[screenName].classList.add('active');
     }
-
-    // Home screen handlers
-    document.getElementById('create-room-btn').addEventListener('click', () => {
-      const name = document.getElementById('player-name').value.trim();
-      if (!name) {
-        showError('home-error', 'Please enter your name');
-        return;
-      }
-      state.playerName = name;
-      socket.emit('createRoom', {
-        playerName: name,
-        settings: {
-          rounds: 5,
-          viewTime: 30,
-          guessTime: 30
-        }
-      });
-    });
-
-    document.getElementById('join-room-btn').addEventListener('click', () => {
-      const name = document.getElementById('player-name').value.trim();
-      const code = document.getElementById('room-code-input').value.trim().toUpperCase();
-      if (!name) {
-        showError('home-error', 'Please enter your name');
-        return;
-      }
-      if (!code || code.length !== 6) {
-        showError('home-error', 'Please enter a valid 6-character room code');
-        return;
-      }
-      state.playerName = name;
-      socket.emit('joinRoom', { roomCode: code, playerName: name });
-    });
 
     function showError(elementId, message) {
       const el = document.getElementById(elementId);
@@ -1003,7 +569,24 @@
       setTimeout(() => el.classList.remove('visible'), 3000);
     }
 
-    // Socket event handlers
+    // Home screen
+    document.getElementById('create-room-btn').addEventListener('click', () => {
+      const name = document.getElementById('player-name').value.trim();
+      if (!name) return showError('home-error', 'Please enter your name');
+      state.playerName = name;
+      socket.emit('createRoom', { playerName: name, settings: { rounds: 5, viewTime: 30, guessTime: 30 } });
+    });
+
+    document.getElementById('join-room-btn').addEventListener('click', () => {
+      const name = document.getElementById('player-name').value.trim();
+      const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+      if (!name) return showError('home-error', 'Please enter your name');
+      if (!code || code.length !== 6) return showError('home-error', 'Enter a valid 6-character room code');
+      state.playerName = name;
+      socket.emit('joinRoom', { roomCode: code, playerName: name });
+    });
+
+    // Socket events
     socket.on('roomCreated', (data) => {
       state.roomCode = data.roomCode;
       state.isHost = true;
@@ -1022,9 +605,7 @@
       updateUrl(data.roomCode);
     });
 
-    socket.on('joinError', (data) => {
-      showError('home-error', data.message);
-    });
+    socket.on('joinError', (data) => showError('home-error', data.message));
 
     socket.on('playerJoined', (data) => {
       state.players = data.players;
@@ -1033,11 +614,8 @@
 
     socket.on('playerLeft', (data) => {
       state.players = data.players;
-      // Check if we became host
       const me = state.players.find(p => p.name === state.playerName);
-      if (me && me.isHost) {
-        state.isHost = true;
-      }
+      if (me && me.isHost) state.isHost = true;
       updatePlayerList();
       updateHostControls();
     });
@@ -1055,6 +633,7 @@
       state.timerEnd = data.timerEnd;
       state.hasGuessed = false;
       state.guessCoords = null;
+      state.actualYear = null;
 
       showScreen('game');
       document.getElementById('results-modal').classList.remove('active');
@@ -1062,7 +641,6 @@
       updateGameUI();
       loadStreetView(data.location);
       
-      // Hide map panel during viewing
       document.getElementById('map-panel').classList.add('hidden');
       document.getElementById('phase-badge').textContent = 'Viewing';
       document.getElementById('phase-badge').classList.remove('guessing');
@@ -1079,9 +657,12 @@
         document.getElementById('phase-badge').textContent = 'Guessing';
         document.getElementById('phase-badge').classList.add('guessing');
         
-        // Reset guess UI
         document.getElementById('submit-guess-btn').disabled = true;
         document.getElementById('guess-submitted-msg').classList.remove('visible');
+        
+        document.getElementById('year-slider').value = 2015;
+        document.getElementById('year-value').textContent = '2015';
+        state.currentYear = 2015;
         
         initGuessMap();
       }
@@ -1106,9 +687,7 @@
       showRoundResults(data);
     });
 
-    socket.on('gameOver', (data) => {
-      showFinalResults(data.results);
-    });
+    socket.on('gameOver', (data) => showFinalResults(data.results));
 
     socket.on('returnedToLobby', (data) => {
       state.players = data.players;
@@ -1121,7 +700,12 @@
       document.getElementById('final-modal').classList.remove('active');
     });
 
-    // Lobby functions
+    socket.on('readyUpdate', (data) => {
+      const btn = document.getElementById('next-round-btn');
+      if (btn.disabled) btn.textContent = `Waiting (${data.readyCount}/${data.totalPlayers})...`;
+    });
+
+    // Lobby
     function updateLobby() {
       document.getElementById('lobby-room-code').textContent = state.roomCode;
       updatePlayerList();
@@ -1131,7 +715,6 @@
     function updatePlayerList() {
       const list = document.getElementById('player-list');
       document.getElementById('player-count').textContent = state.players.length;
-      
       list.innerHTML = state.players.map(p => `
         <div class="player-item">
           <div class="player-avatar">${p.name.charAt(0).toUpperCase()}</div>
@@ -1142,19 +725,11 @@
     }
 
     function updateHostControls() {
-      const settingsGrid = document.getElementById('settings-grid');
       const startBtn = document.getElementById('start-game-btn');
       const waitingText = document.getElementById('waiting-text');
-
-      if (state.isHost) {
-        settingsGrid.querySelectorAll('select').forEach(s => s.disabled = false);
-        startBtn.style.display = 'block';
-        waitingText.style.display = 'none';
-      } else {
-        settingsGrid.querySelectorAll('select').forEach(s => s.disabled = true);
-        startBtn.style.display = 'none';
-        waitingText.style.display = 'block';
-      }
+      document.querySelectorAll('#settings-grid select').forEach(s => s.disabled = !state.isHost);
+      startBtn.style.display = state.isHost ? 'block' : 'none';
+      waitingText.style.display = state.isHost ? 'none' : 'block';
     }
 
     function updateUrl(roomCode) {
@@ -1167,13 +742,10 @@
       const url = `${window.location.origin}${window.location.pathname}?room=${state.roomCode}`;
       navigator.clipboard.writeText(url).then(() => {
         document.getElementById('copy-code-btn').textContent = 'Copied!';
-        setTimeout(() => {
-          document.getElementById('copy-code-btn').textContent = 'Copy Link';
-        }, 2000);
+        setTimeout(() => document.getElementById('copy-code-btn').textContent = 'Copy Link', 2000);
       });
     });
 
-    // Settings change handlers
     ['setting-rounds', 'setting-view-time', 'setting-guess-time'].forEach(id => {
       document.getElementById(id).addEventListener('change', () => {
         if (!state.isHost) return;
@@ -1187,244 +759,194 @@
       });
     });
 
-    document.getElementById('start-game-btn').addEventListener('click', () => {
-      socket.emit('startGame');
-    });
+    document.getElementById('start-game-btn').addEventListener('click', () => socket.emit('startGame'));
 
-    // Game functions
+    // Game
     function updateGameUI() {
       document.getElementById('round-display').textContent = `${state.currentRound}/${state.totalRounds}`;
       document.getElementById('guess-count-text').textContent = `0/${state.players.length} guessed`;
     }
 
     function loadStreetView(location) {
-      const { lat, lng, heading } = location;
-      const embedUrl = `https://www.google.com/maps/embed/v1/streetview?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&location=${lat},${lng}&heading=${heading}&pitch=0&fov=90`;
-      document.getElementById('streetview-frame').src = embedUrl;
+      if (!googleMapsReady) {
+        console.error('Google Maps not ready');
+        return;
+      }
+
+      const position = { lat: location.lat, lng: location.lng };
+
+      streetViewService.getPanorama({
+        location: position,
+        radius: 50,
+        source: google.maps.StreetViewSource.OUTDOOR
+      }, (data, status) => {
+        if (status === 'OK') {
+          const times = data.time || [];
+          let selectedPano = data.location.pano;
+          let selectedYear = new Date().getFullYear();
+
+          if (times.length > 0) {
+            // Pick a random historical image
+            const randomTime = times[Math.floor(Math.random() * times.length)];
+            selectedPano = randomTime.pano;
+            selectedYear = new Date(randomTime.date).getFullYear();
+          }
+
+          state.actualYear = selectedYear;
+
+          if (state.isHost) {
+            socket.emit('reportYear', { year: selectedYear });
+          }
+
+          if (streetViewPanorama) {
+            streetViewPanorama.setPano(selectedPano);
+          } else {
+            streetViewPanorama = new google.maps.StreetViewPanorama(
+              document.getElementById('streetview'),
+              {
+                pano: selectedPano,
+                addressControl: false,
+                showRoadLabels: false,
+                linksControl: true,
+                panControl: false,
+                zoomControl: false,
+                fullscreenControl: false,
+                motionTracking: false,
+                motionTrackingControl: false,
+                enableCloseButton: false
+              }
+            );
+          }
+        } else {
+          console.error('Street View not available:', status);
+        }
+      });
     }
 
     function startTimer() {
       clearInterval(state.timerInterval);
-      
       const timerDisplay = document.getElementById('timer-display');
       
-      function updateTimer() {
+      function update() {
         const remaining = Math.max(0, Math.ceil((state.timerEnd - Date.now()) / 1000));
         timerDisplay.textContent = remaining;
-        
-        if (remaining <= 10) {
-          timerDisplay.classList.add('warning');
-        } else {
-          timerDisplay.classList.remove('warning');
-        }
-        
-        if (remaining <= 0) {
-          clearInterval(state.timerInterval);
-        }
+        timerDisplay.classList.toggle('warning', remaining <= 10);
+        if (remaining <= 0) clearInterval(state.timerInterval);
       }
 
-      updateTimer();
-      state.timerInterval = setInterval(updateTimer, 100);
+      update();
+      state.timerInterval = setInterval(update, 100);
     }
 
     function initGuessMap() {
-      if (guessMap) {
-        guessMap.remove();
-      }
+      if (guessMap) guessMap.remove();
 
-      guessMap = L.map('guess-map', {
-        center: [38.0336, -78.5080],
-        zoom: 13
-      });
-
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap © CARTO',
-        maxZoom: 19
-      }).addTo(guessMap);
-
+      guessMap = L.map('guess-map', { center: [38.0336, -78.5080], zoom: 14 });
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(guessMap);
       guessMap.on('click', handleMapClick);
-
       setTimeout(() => guessMap.invalidateSize(), 100);
     }
 
     function handleMapClick(e) {
       if (state.hasGuessed) return;
+      state.guessCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
 
-      const { lat, lng } = e.latlng;
-      state.guessCoords = { lat, lng };
-
-      if (state.guessMarker) {
-        guessMap.removeLayer(state.guessMarker);
-      }
-
-      const markerIcon = L.divIcon({
-        className: 'guess-marker',
-        iconSize: [16, 16],
-        iconAnchor: [8, 8]
-      });
-
-      state.guessMarker = L.marker([lat, lng], { icon: markerIcon }).addTo(guessMap);
+      if (state.guessMarker) guessMap.removeLayer(state.guessMarker);
+      state.guessMarker = L.marker([e.latlng.lat, e.latlng.lng], {
+        icon: L.divIcon({ className: 'guess-marker', iconSize: [16, 16], iconAnchor: [8, 8] })
+      }).addTo(guessMap);
+      
       document.getElementById('submit-guess-btn').disabled = false;
     }
 
     document.getElementById('submit-guess-btn').addEventListener('click', () => {
       if (!state.guessCoords || state.hasGuessed) return;
-      socket.emit('submitGuess', state.guessCoords);
+      socket.emit('submitGuess', { lat: state.guessCoords.lat, lng: state.guessCoords.lng, year: state.currentYear });
     });
 
     // Results
     function showRoundResults(data) {
       document.getElementById('results-round').textContent = data.round;
       document.getElementById('results-location').textContent = data.location.name;
+      document.getElementById('results-year').textContent = data.actualYear || '?';
 
-      // Build results list with better distance formatting
       const listEl = document.getElementById('results-list');
       listEl.innerHTML = data.results.map((r, i) => {
         let distanceText = 'No guess';
         if (r.distance !== null) {
-          if (r.distance < 0.1) {
-            // Show feet for very close guesses
-            distanceText = Math.round(r.distance * 5280) + ' ft';
-          } else {
-            distanceText = r.distance.toFixed(2) + ' mi';
-          }
+          distanceText = r.distance < 0.1 ? Math.round(r.distance * 5280) + ' ft' : r.distance.toFixed(2) + ' mi';
         }
+
+        const yearDiff = r.guessedYear && data.actualYear ? Math.abs(r.guessedYear - data.actualYear) : null;
+        const yearClass = yearDiff === 0 ? 'correct' : '';
+        const yearText = r.guessedYear ? `${r.guessedYear} (${yearDiff === 0 ? '✓' : (yearDiff !== null ? `±${yearDiff}` : '?')})` : '-';
+
         return `
           <div class="result-row">
             <div class="result-rank">#${i + 1}</div>
             <div class="result-name">${r.name}${r.name === state.playerName ? ' (You)' : ''}</div>
-            <div class="result-distance">${distanceText}</div>
-            <div class="result-points">+${r.roundPoints}</div>
-            <div class="result-total">${r.score.toLocaleString()}</div>
+            <div class="result-details">
+              <span class="result-distance">${distanceText}</span>
+              <span class="result-year-guess ${yearClass}">${yearText}</span>
+            </div>
+            <div>
+              <div class="result-points">+${r.roundPoints}</div>
+              <div class="result-breakdown">${r.distancePoints || 0} + ${r.yearPoints || 0}</div>
+            </div>
           </div>
         `;
       }).join('');
 
-      // Initialize result map with error handling
+      // Result map
       try {
-        if (resultMap) {
-          resultMap.remove();
-          resultMap = null;
-        }
+        if (resultMap) { resultMap.remove(); resultMap = null; }
+        resultMap = L.map('result-map', { center: [data.location.lat, data.location.lng], zoom: 14, zoomControl: false });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(resultMap);
 
-        resultMap = L.map('result-map', {
-          center: [data.location.lat, data.location.lng],
-          zoom: 13,
-          zoomControl: false
-        });
+        L.marker([data.location.lat, data.location.lng], {
+          icon: L.divIcon({ className: 'actual-marker', iconSize: [20, 20], iconAnchor: [10, 10] })
+        }).addTo(resultMap).bindPopup(data.location.name);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-          maxZoom: 19
-        }).addTo(resultMap);
-
-        // Add actual location marker
-        const actualIcon = L.divIcon({
-          className: 'actual-marker',
-          iconSize: [20, 20],
-          iconAnchor: [10, 10]
-        });
-
-        L.marker([data.location.lat, data.location.lng], { icon: actualIcon })
-          .addTo(resultMap)
-          .bindPopup(data.location.name);
-
-        // Add player guess markers
         const colors = ['#E57200', '#3B82F6', '#22C55E', '#EAB308', '#EC4899', '#8B5CF6', '#14B8A6', '#F97316'];
         const bounds = [[data.location.lat, data.location.lng]];
 
         data.results.forEach((r, i) => {
           if (r.guess) {
             const color = colors[i % colors.length];
-            const icon = L.divIcon({
-              className: 'player-guess-marker',
-              html: `<div style="background: ${color}; width: 100%; height: 100%; border-radius: 50%;"></div>`,
-              iconSize: [14, 14],
-              iconAnchor: [7, 7]
-            });
-
-            L.marker([r.guess.lat, r.guess.lng], { icon })
-              .addTo(resultMap)
-              .bindPopup(r.name);
-
+            L.marker([r.guess.lat, r.guess.lng], {
+              icon: L.divIcon({ className: 'player-guess-marker', html: `<div style="background:${color};width:100%;height:100%;border-radius:50%"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] })
+            }).addTo(resultMap).bindPopup(r.name);
             bounds.push([r.guess.lat, r.guess.lng]);
-
-            // Draw line to actual
-            L.polyline([
-              [r.guess.lat, r.guess.lng],
-              [data.location.lat, data.location.lng]
-            ], {
-              color,
-              weight: 2,
-              opacity: 0.5,
-              dashArray: '5, 5'
-            }).addTo(resultMap);
+            L.polyline([[r.guess.lat, r.guess.lng], [data.location.lat, data.location.lng]], { color, weight: 2, opacity: 0.5, dashArray: '5,5' }).addTo(resultMap);
           }
         });
 
-        if (bounds.length > 1) {
-          resultMap.fitBounds(bounds, { padding: [30, 30] });
-        }
+        if (bounds.length > 1) resultMap.fitBounds(bounds, { padding: [30, 30] });
+        setTimeout(() => { if (resultMap) resultMap.invalidateSize(); }, 100);
+      } catch (err) { console.error('Result map error:', err); }
 
-        setTimeout(() => {
-          if (resultMap) resultMap.invalidateSize();
-        }, 100);
-      } catch (err) {
-        console.error('Error initializing result map:', err);
-      }
-
-      // Reset and update button
       const nextBtn = document.getElementById('next-round-btn');
       nextBtn.disabled = false;
       nextBtn.textContent = data.round >= data.totalRounds ? 'See Final Results' : 'Next Round';
-
       document.getElementById('results-modal').classList.add('active');
     }
 
     document.getElementById('next-round-btn').addEventListener('click', () => {
       const btn = document.getElementById('next-round-btn');
       if (btn.disabled) return;
-      
-      console.log('Sending readyForNext');
       socket.emit('readyForNext');
       btn.disabled = true;
       btn.textContent = 'Waiting...';
-      
-      // Safety timeout - re-enable after 10 seconds if stuck
-      setTimeout(() => {
-        if (btn.textContent === 'Waiting...') {
-          console.log('Timeout - re-enabling button');
-          btn.disabled = false;
-          btn.textContent = 'Next Round (retry)';
-        }
-      }, 10000);
-    });
-
-    // Handle ready count updates
-    socket.on('readyUpdate', (data) => {
-      const btn = document.getElementById('next-round-btn');
-      if (btn.disabled) {
-        btn.textContent = `Waiting (${data.readyCount}/${data.totalPlayers})...`;
-      }
-    });
-
-    // Handle disconnection
-    socket.on('disconnect', () => {
-      console.log('Disconnected from server');
-    });
-
-    socket.on('connect', () => {
-      console.log('Connected to server');
+      setTimeout(() => { if (btn.textContent === 'Waiting...') { btn.disabled = false; btn.textContent = 'Next Round (retry)'; } }, 10000);
     });
 
     function showFinalResults(results) {
       document.getElementById('results-modal').classList.remove('active');
-
       const winner = results[0];
       document.getElementById('winner-name').textContent = winner.name;
       document.getElementById('winner-score').textContent = winner.score.toLocaleString() + ' pts';
 
-      const standingsEl = document.getElementById('final-standings');
-      standingsEl.innerHTML = results.map((r, i) => `
+      document.getElementById('final-standings').innerHTML = results.map((r, i) => `
         <div class="final-row">
           <div class="final-rank">#${i + 1}</div>
           <div class="final-name">${r.name}${r.name === state.playerName ? ' (You)' : ''}</div>
@@ -1432,15 +954,11 @@
         </div>
       `).join('');
 
-      // Show/hide play again based on host
       document.getElementById('play-again-btn').style.display = state.isHost ? 'block' : 'none';
-
       document.getElementById('final-modal').classList.add('active');
     }
 
-    document.getElementById('play-again-btn').addEventListener('click', () => {
-      socket.emit('returnToLobby');
-    });
+    document.getElementById('play-again-btn').addEventListener('click', () => socket.emit('returnToLobby'));
   </script>
 </body>
 </html>
