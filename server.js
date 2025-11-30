@@ -15,36 +15,97 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Charlottesville/UVA locations - prioritizing indoor Street Views where available
+// Charlottesville/UVA locations - focused on campus and surrounding areas
 const LOCATIONS = [
-  // Indoor locations (harder, more interesting)
-  { name: "Inside the Rotunda", lat: 38.03545, lng: -78.50337, heading: 180, indoor: true },
-  { name: "Alderman Library Reading Room", lat: 38.03679, lng: -78.50567, heading: 270, indoor: true },
-  { name: "Newcomb Hall Interior", lat: 38.03538, lng: -78.50699, heading: 90, indoor: true },
-  { name: "The Corner - Littlejohn's Deli", lat: 38.03356, lng: -78.50052, heading: 45, indoor: true },
-  { name: "Dairy Market Food Hall", lat: 38.02509, lng: -78.47893, heading: 180, indoor: true },
-  { name: "IX Art Park Gallery", lat: 38.02432, lng: -78.47922, heading: 0, indoor: true },
-  { name: "Downtown Mall - Mudhouse Coffee", lat: 38.02963, lng: -78.48161, heading: 90, indoor: true },
-  { name: "Charlottesville City Market", lat: 38.02912, lng: -78.47704, heading: 270, indoor: true },
-  { name: "The Jefferson Theater Lobby", lat: 38.02943, lng: -78.48054, heading: 180, indoor: true },
-  { name: "Violet Crown Cinema", lat: 38.02994, lng: -78.48209, heading: 0, indoor: true },
-  { name: "McGuffey Art Center", lat: 38.03089, lng: -78.48441, heading: 90, indoor: true },
-  { name: "C'ville Coffee Downtown", lat: 38.02947, lng: -78.47742, heading: 45, indoor: true },
-  { name: "Brazos Tacos", lat: 38.02882, lng: -78.48292, heading: 180, indoor: true },
-  { name: "John Paul Jones Arena Concourse", lat: 38.04583, lng: -78.50694, heading: 270, indoor: true },
-  { name: "Regal Stonefield Cinema", lat: 38.05712, lng: -78.49813, heading: 0, indoor: true },
+  // UVA Grounds - Core
+  { name: "The Rotunda", lat: 38.03565, lng: -78.50355 },
+  { name: "The Lawn - North", lat: 38.03465, lng: -78.50350 },
+  { name: "The Lawn - South", lat: 38.03350, lng: -78.50350 },
+  { name: "Old Cabell Hall", lat: 38.03318, lng: -78.50459 },
+  { name: "Alderman Library", lat: 38.03692, lng: -78.50573 },
+  { name: "Clemons Library", lat: 38.03629, lng: -78.50632 },
+  { name: "Newcomb Hall", lat: 38.03538, lng: -78.50699 },
+  { name: "Memorial Gym", lat: 38.03374, lng: -78.50766 },
+  { name: "The Amphitheatre", lat: 38.03308, lng: -78.50336 },
+  { name: "Pavilion Gardens", lat: 38.03414, lng: -78.50280 },
   
-  // Outdoor locations (mix of easy and tricky)
-  { name: "The Rotunda - Outside", lat: 38.0356, lng: -78.5034, heading: 180, indoor: false },
-  { name: "The Lawn", lat: 38.0346, lng: -78.5035, heading: 0, indoor: false },
-  { name: "The Corner", lat: 38.0343, lng: -78.5010, heading: 90, indoor: false },
-  { name: "Scott Stadium", lat: 38.0311, lng: -78.5138, heading: 45, indoor: false },
-  { name: "Downtown Mall Fountain", lat: 38.0298, lng: -78.4800, heading: 270, indoor: false },
-  { name: "Belmont Bridge", lat: 38.0275, lng: -78.4825, heading: 45, indoor: false },
-  { name: "UVA Medical Center", lat: 38.0297, lng: -78.5009, heading: 0, indoor: false },
-  { name: "Barracks Road Shopping Center", lat: 38.0453, lng: -78.5057, heading: 180, indoor: false },
-  { name: "Rugby Road", lat: 38.0385, lng: -78.5038, heading: 180, indoor: false },
-  { name: "Lambeth Field", lat: 38.0378, lng: -78.5093, heading: 135, indoor: false },
+  // UVA Grounds - Academic
+  { name: "Clark Hall", lat: 38.03293, lng: -78.50948 },
+  { name: "Thornton Hall (Engineering)", lat: 38.03322, lng: -78.50999 },
+  { name: "Rice Hall", lat: 38.03188, lng: -78.51089 },
+  { name: "Olsson Hall", lat: 38.03263, lng: -78.51103 },
+  { name: "Chemistry Building", lat: 38.03335, lng: -78.50842 },
+  { name: "Physics Building", lat: 38.03383, lng: -78.50858 },
+  { name: "Gilmer Hall (Bio)", lat: 38.03268, lng: -78.50696 },
+  { name: "Bryan Hall", lat: 38.03439, lng: -78.50448 },
+  { name: "Rouss Hall", lat: 38.03506, lng: -78.50433 },
+  { name: "Minor Hall", lat: 38.03350, lng: -78.50590 },
+  
+  // UVA - Athletics
+  { name: "Scott Stadium", lat: 38.03116, lng: -78.51387 },
+  { name: "John Paul Jones Arena", lat: 38.04611, lng: -78.50680 },
+  { name: "Davenport Field (Baseball)", lat: 38.04646, lng: -78.51161 },
+  { name: "Klöckner Stadium (Soccer)", lat: 38.04493, lng: -78.51285 },
+  { name: "Aquatic & Fitness Center", lat: 38.03210, lng: -78.51479 },
+  { name: "Lambeth Field", lat: 38.03791, lng: -78.50941 },
+  { name: "Carr's Hill Field", lat: 38.03627, lng: -78.50189 },
+  { name: "Nameless Field", lat: 38.03876, lng: -78.50721 },
+  
+  // UVA - Residential & Other
+  { name: "Hereford College", lat: 38.02984, lng: -78.51696 },
+  { name: "Gooch/Dillard Dorms", lat: 38.02855, lng: -78.51404 },
+  { name: "Observatory Hill", lat: 38.03112, lng: -78.52012 },
+  { name: "Brandon Ave Dorms", lat: 38.03010, lng: -78.50928 },
+  { name: "Lambeth Apartments", lat: 38.03753, lng: -78.51033 },
+  { name: "Rugby Road", lat: 38.03867, lng: -78.50396 },
+  { name: "Madison Bowl", lat: 38.03706, lng: -78.50435 },
+  { name: "Beta Bridge", lat: 38.03629, lng: -78.50180 },
+  { name: "UVA Chapel", lat: 38.03591, lng: -78.50302 },
+  { name: "Peabody Hall", lat: 38.03475, lng: -78.50534 },
+  
+  // The Corner & Nearby
+  { name: "The Corner - Main", lat: 38.03356, lng: -78.50052 },
+  { name: "The Corner - Bodo's", lat: 38.03403, lng: -78.49979 },
+  { name: "The Corner - Trinity Irish Pub", lat: 38.03327, lng: -78.50131 },
+  { name: "The Corner - Christian's Pizza", lat: 38.03367, lng: -78.50108 },
+  { name: "Elliewood Avenue", lat: 38.03470, lng: -78.49965 },
+  { name: "Wertland Street", lat: 38.03615, lng: -78.49859 },
+  { name: "14th Street", lat: 38.03502, lng: -78.49786 },
+  { name: "JPA & Rugby Intersection", lat: 38.03904, lng: -78.50505 },
+  
+  // UVA Medical Center Area
+  { name: "UVA Hospital - Main", lat: 38.02991, lng: -78.50093 },
+  { name: "Emily Couric Cancer Center", lat: 38.02849, lng: -78.50012 },
+  { name: "UVA Children's Hospital", lat: 38.03025, lng: -78.50201 },
+  { name: "Medical School", lat: 38.03137, lng: -78.50148 },
+  { name: "Lee Street", lat: 38.03008, lng: -78.49843 },
+  
+  // Downtown Charlottesville
+  { name: "Downtown Mall - East", lat: 38.02980, lng: -78.47655 },
+  { name: "Downtown Mall - West", lat: 38.02933, lng: -78.48219 },
+  { name: "Downtown Mall - Center", lat: 38.02960, lng: -78.47969 },
+  { name: "Charlottesville Pavilion", lat: 38.02873, lng: -78.47853 },
+  { name: "City Hall", lat: 38.02978, lng: -78.47666 },
+  { name: "Main Street (off mall)", lat: 38.03028, lng: -78.48463 },
+  { name: "Water Street", lat: 38.02887, lng: -78.47737 },
+  { name: "Market Street", lat: 38.03106, lng: -78.47923 },
+  
+  // Belmont
+  { name: "Belmont Bridge", lat: 38.02743, lng: -78.48248 },
+  { name: "Dairy Market", lat: 38.02509, lng: -78.47893 },
+  { name: "IX Art Park", lat: 38.02432, lng: -78.47922 },
+  { name: "Avon Street", lat: 38.02347, lng: -78.47796 },
+  { name: "Monticello Road", lat: 38.02541, lng: -78.48054 },
+  
+  // Other Charlottesville
+  { name: "Barracks Road", lat: 38.04530, lng: -78.50573 },
+  { name: "Stonefield", lat: 38.05692, lng: -78.49841 },
+  { name: "Emmet Street", lat: 38.04243, lng: -78.50242 },
+  { name: "Preston Ave", lat: 38.04120, lng: -78.48935 },
+  { name: "Cherry Avenue", lat: 38.02671, lng: -78.49175 },
+  { name: "Fontaine Ave", lat: 38.02318, lng: -78.50851 },
+  { name: "5th Street", lat: 38.02438, lng: -78.48833 },
+  { name: "Ridge Street", lat: 38.02711, lng: -78.48541 },
 ];
 
 // Game rooms storage
@@ -79,6 +140,17 @@ function calculatePoints(distance) {
   // 0 miles = 5000, 0.1 miles = ~4000, 0.25 miles = ~2800, 0.5 miles = ~1500, 1 mile = ~450, 2+ miles = near 0
   const points = Math.round(5000 * Math.exp(-3 * distance));
   return Math.max(0, points);
+}
+
+// Calculate year bonus points
+function calculateYearPoints(guessedYear, actualYear) {
+  if (!guessedYear || !actualYear) return 0;
+  const diff = Math.abs(guessedYear - actualYear);
+  if (diff === 0) return 1000;
+  if (diff === 1) return 700;
+  if (diff === 2) return 400;
+  if (diff === 3) return 100;
+  return 0;
 }
 
 // Shuffle array
@@ -200,26 +272,14 @@ io.on('connection', (socket) => {
     room.state = 'viewing';
     room.currentRound = 1;
     
-    // Prioritize indoor locations (70% indoor, 30% outdoor)
-    const indoorLocations = LOCATIONS.filter(loc => loc.indoor);
-    const outdoorLocations = LOCATIONS.filter(loc => !loc.indoor);
-    
-    const numRounds = room.settings.rounds;
-    const numIndoor = Math.ceil(numRounds * 0.7);
-    const numOutdoor = numRounds - numIndoor;
-    
-    // Shuffle and pick from each category
-    const shuffledIndoor = shuffleArray(indoorLocations).slice(0, numIndoor);
-    const shuffledOutdoor = shuffleArray(outdoorLocations).slice(0, numOutdoor);
-    
-    // Combine and shuffle the final selection
-    room.locations = shuffleArray([...shuffledIndoor, ...shuffledOutdoor]);
+    // Shuffle and pick locations for this game
+    room.locations = shuffleArray(LOCATIONS).slice(0, room.settings.rounds);
 
     startRound(room);
   });
 
   // Submit a guess
-  socket.on('submitGuess', ({ lat, lng }) => {
+  socket.on('submitGuess', ({ lat, lng, year }) => {
     const room = rooms.get(socket.roomCode);
     if (!room || room.state !== 'guessing') return;
 
@@ -228,20 +288,25 @@ io.on('connection', (socket) => {
 
     const location = room.currentLocation;
     const distance = calculateDistance(lat, lng, location.lat, location.lng);
-    const points = calculatePoints(distance);
+    const distancePoints = calculatePoints(distance);
+    const yearPoints = calculateYearPoints(year, room.currentYear);
+    const totalPoints = distancePoints + yearPoints;
 
     room.roundGuesses.set(socket.id, {
       lat,
       lng,
+      year,
       distance,
-      points
+      distancePoints,
+      yearPoints,
+      points: totalPoints
     });
 
     player.hasGuessed = true;
-    player.score += points;
+    player.score += totalPoints;
 
     // Notify the player their guess was received
-    socket.emit('guessReceived', { distance, points });
+    socket.emit('guessReceived', { distance, distancePoints, yearPoints, points: totalPoints });
 
     // Notify everyone of guess count
     const guessCount = room.roundGuesses.size;
@@ -253,6 +318,14 @@ io.on('connection', (socket) => {
       clearTimeout(room.timer);
       endGuessing(room);
     }
+  });
+
+  // Host reports the actual year of the Street View imagery
+  socket.on('reportYear', ({ year }) => {
+    const room = rooms.get(socket.roomCode);
+    if (!room || socket.id !== room.host) return;
+    room.currentYear = year;
+    console.log(`Round ${room.currentRound} year set to: ${year}`);
   });
 
   // Player requests next round (after viewing results)
@@ -359,6 +432,7 @@ function startRound(room) {
   });
 
   room.currentLocation = room.locations[room.currentRound - 1];
+  room.currentYear = null; // Will be set when client reports the actual year
 
   const viewDuration = room.settings.viewTime * 1000;
   room.timerEnd = Date.now() + viewDuration;
@@ -368,8 +442,7 @@ function startRound(room) {
     totalRounds: room.settings.rounds,
     location: {
       lat: room.currentLocation.lat,
-      lng: room.currentLocation.lng,
-      heading: room.currentLocation.heading
+      lng: room.currentLocation.lng
     },
     phase: 'viewing',
     timerEnd: room.timerEnd
@@ -378,6 +451,14 @@ function startRound(room) {
   room.timer = setTimeout(() => {
     startGuessing(room);
   }, viewDuration);
+}
+
+// Host reports the actual year of the Street View imagery
+function handleYearReport(socket, year) {
+  const room = rooms.get(socket.roomCode);
+  if (!room || socket.id !== room.host) return;
+  room.currentYear = year;
+  console.log(`Round ${room.currentRound} year set to: ${year}`);
 }
 
 function startGuessing(room) {
@@ -408,7 +489,10 @@ function endGuessing(room) {
       name: player.name,
       score: player.score,
       roundPoints: guess ? guess.points : 0,
+      distancePoints: guess ? guess.distancePoints : 0,
+      yearPoints: guess ? guess.yearPoints : 0,
       distance: guess ? guess.distance : null,
+      guessedYear: guess ? guess.year : null,
       guess: guess ? { lat: guess.lat, lng: guess.lng } : null
     });
   });
@@ -424,6 +508,7 @@ function endGuessing(room) {
       lat: room.currentLocation.lat,
       lng: room.currentLocation.lng
     },
+    actualYear: room.currentYear,
     results
   });
 }
